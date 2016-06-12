@@ -183,10 +183,10 @@ function loadBlackHole() {
     window.ctx = c.getContext("2d");
     
     var blackHole = new Image();
-    blackHole.width = '50';
-    blackHole.height = '50';
+    
     blackHole.onload = function() {
-    	ctx.drawImage(blackHole, 100, 100);
+
+    	ctx.drawImage(blackHole, 100, 100, 50, 50);
     	console.log("successful");
     }
 
