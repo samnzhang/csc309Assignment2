@@ -181,9 +181,16 @@ function infoBar() {
 function loadBlackHole() {
 	var c = document.getElementById("main");
     window.ctx = c.getContext("2d");
+    
     var blackHole = new Image();
-    blackHole = 'assets/images/black_hole.svg';
-    ctx.drawImage(blackHole, 100, 100);
+    blackHole.width = '50';
+    blackHole.height = '50';
+    blackHole.onload = function() {
+    	ctx.drawImage(blackHole, 100, 100);
+    	console.log("successful");
+    }
+
+    blackHole.src = 'assets/images/black_hole.svg';
 }
 
 
