@@ -24,6 +24,7 @@ function checkCollision(spaceOject, x, y) {
 function Moon(x, y) {
 	this.x = x;
 	this.y = y;
+	this.direction = generateDirection();
 }
 
 
@@ -48,7 +49,6 @@ Moon.prototype.draw=function() {
 		ctx.fill();
 		
 		ctx.stroke();
-   		console.log("0");
  	}
 
 }
@@ -58,6 +58,7 @@ Moon.prototype.draw=function() {
 Planet = function(x, y) {
 	this.x = x;
 	this.y = y;
+	this.direction = generateDirection();
 
 }
 
@@ -79,6 +80,7 @@ Planet.prototype.draw=function() {
 Ufo = function(x, y) {
 	this.x = x;
 	this.y = y;
+	this.direction = generateDirection();
 
 }
 
@@ -101,6 +103,7 @@ Ufo.prototype.draw=function() {
 Spaceship = function(x, y) {
 	this.x = x;
 	this.y = y;
+	this.direction = generateDirection();
 
 }
 
@@ -135,6 +138,16 @@ Spaceship.prototype.draw=function() {
 		ctx.stroke();
 	}
 }
+
+function Direction(x, y) {
+	this.x = x;
+	this.y = y;
+
+}
+
+
+var directions = [new Direction(1, 1),  new Direction(-1, 1), new Direction(1, -1), 
+					new Direction(-1, -1)];
 // object button
 
 /* function button (xTop, xBot, yLeft, yRight) {
@@ -145,7 +158,10 @@ Spaceship.prototype.draw=function() {
 }*/
 
 
-
+function generateDirection() {
+	var direction = directions[Math.floor(Math.random() * 4)];
+	return direction;
+}
 
 // Load the Canvas in the webpage
 function loadCanvas() {
@@ -198,9 +214,8 @@ function loadBlackHole(x, y) {
 }
 
 
-function startGame() {
-	// draw the Moon, Planet, Spaceship and Ufo in the canvas
-	infoBar();
+
+function initObjects() {
 	while (spaceObject.length < 10) {
 		var type = Math.floor(Math.random() * 4);
 		var x = Math.floor(Math.random() * 950) + 25;
@@ -225,6 +240,31 @@ function startGame() {
 		}
 
 	}
+}
+
+function moveObject() {
+	var c = document.getElementById("main");
+    var ctx = c.getContext("2d");
+    window.ctx.clearRect(0, 40, 1000, 600);
+	for (object in spaceObject) {
+		var temp = spaceObject[object];
+		temp.draw();
+		while ((temp.x + temp.direction.x) <= 25 || (temp.x + temp.direction.x) >= 975 || (temp.y + temp.direction.y) <= 70 || (temp.y + temp.direction.y) >= 610) {
+			temp.direction = generateDirection();
+		} 
+		temp.x += temp.direction.x;
+		temp.y += temp.direction.y;
+	}
+	setTimeout(moveObject, 10);
+}
+
+
+
+function startGame() {
+	// draw the Moon, Planet, Spaceship and Ufo in the canvas
+	infoBar();
+	initObjects();
+	moveObject();
 	// var moon = new Moon(100, 200, (50/3));
 	// moon.draw();
 	// var planet = new Planet(200, 300);
@@ -234,8 +274,6 @@ function startGame() {
 	// var spaceship = new Spaceship(500, 400);
 	// spaceship.draw();
 	// loadBlackHole(200, 100);
-	for (object in spaceObject) {
-		spaceObject[object].draw();
-	}
+	
 	
 }
