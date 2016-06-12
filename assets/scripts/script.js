@@ -178,6 +178,13 @@ function infoBar() {
 	ctx.stroke();
 }
 
+function loadBlackHole() {
+	var c = document.getElementById("main");
+    window.ctx = c.getContext("2d");
+    var blackHole = new Image();
+    blackHole = 'assets/images/black_hole.svg';
+    ctx.drawImage(blackHole, 100, 100);
+}
 
 
 function startGame() {
@@ -191,4 +198,6 @@ function startGame() {
 	// ufo.draw();
 	// var spaceship = new Spaceship(500, 400);
 	// spaceship.draw();
+	loadBlackHole();
+	
 }

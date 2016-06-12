@@ -17,6 +17,6 @@ canvas#main {
 	padding-left: 
 }
 
-footer#credit {
-	padding-top: 51%;
+span#credit {
+	bottom: 0px;
 }
