@@ -190,7 +190,7 @@ function loadBlackHole() {
     	console.log("successful");
     }
 
-    blackHole.src = 'assets/images/black-hole.svg';
+    blackHole.src = 'assets/images/black_hole.svg';
 }
 
 
