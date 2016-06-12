@@ -150,37 +150,45 @@ function loadCanvas() {
 	canvas.width = '1000';
 	canvas.height = '640';
 	var start = document.getElementById('start-page');
+	var footer = document.getElementById('credit');
 	document.body.removeChild(start);
-    document.body.appendChild(canvas);
+	document.body.insertBefore(canvas, footer);
     Canvasloaded = true;
-    console.log("successe");
+    console.log("success");
     startGame();
+}
+
+function infoBar() {
+	var c = document.getElementById("main");
+    window.ctx = c.getContext("2d");
+    ctx.rect(0, 0, 1000, 40);
+	ctx.stroke();
+
+	var level = "Level " + 1;
+	var score = "Score: " + 200;
+	var timer = 60 + " seconds";
+	ctx.font = "20px sans-serif";
+
+	ctx.fillText(level, 20, 27);
+	ctx.fillText(score, 450, 27);
+	ctx.fillText(timer, 890, 27);
+
+	ctx.fillText("Pause", 793, 27);
+	ctx.rect(770, 5, 100, 30);
+	ctx.stroke();
 }
 
 
 
 function startGame() {
 	// draw the Moon, Planet, Spaceship and Ufo in the canvas
-	var moon = new Moon(100, 200, (50/3));
-	moon.draw();
-	var planet = new Planet(200, 300);
-	planet.draw();
-	var ufo = new Ufo(350, 400);
-	ufo.draw();
-	var spaceship = new Spaceship(500, 400);
-	spaceship.draw();
+	infoBar();
+	// var moon = new Moon(100, 200, (50/3));
+	// moon.draw();
+	// var planet = new Planet(200, 300);
+	// planet.draw();
+	// var ufo = new Ufo(350, 400);
+	// ufo.draw();
+	// var spaceship = new Spaceship(500, 400);
+	// spaceship.draw();
 }
-
-// var shapes = new Array();
-// var Shape = function (x, y) {
-//     this.x = x;
-//     this.y = y;
-// }
-
-
-// function start() {
-// 	window.ctx.clearRect(0, 0, 1000, 640);
-// 	shapes.push (new Shape(300, 200));
-
-
-// }

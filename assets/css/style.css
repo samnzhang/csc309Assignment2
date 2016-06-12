@@ -8,3 +8,15 @@ section#start-page {
 	border-style: solid;
 	border-width: 1px;
 }
+
+canvas#main {
+	position: absolute;
+	left: 10%;
+	border: solid;
+	border-width: 1px;
+	padding-left: 
+}
+
+footer#credit {
+	padding-top: 51%;
+}
