@@ -1,19 +1,24 @@
 var Canvasloaded = false;
 
-
+var spaceObject = [];
 
 window.onload = function() {
 
-    
+	
 }
 
+function checkCollision(spaceOject, x, y) {
+	for (var i = 0; i < spaceObject.length; i++) {
+		if ((spaceObject[i].x + 50 > x && spaceObject[i].x - 50 < x &&
+			spaceObject[i].y + 50 > y && spaceObject[i].y - 50 < y &&
+			x > 0 + 25 && x < 1000 - 25 && y > 0 + 25 && y < 640 - 25)) {
+			console.log("true");
+			return true;
+		}
+	}
+	return false;
 
-// parent object
-function SpaceObject(x, y) {
-	this.x = x;
-	this.y = y;
 }
-
 
 // object Moon
 function Moon(x, y) {
@@ -21,7 +26,6 @@ function Moon(x, y) {
 	this.y = y;
 }
 
-Moon._proto_ = SpaceObject;
 
 Moon.prototype.draw=function() {
 	// If Canvas is loaded then we call the method then the moon would be drawn
@@ -120,11 +124,11 @@ Spaceship.prototype.draw=function() {
 
 
 		// right wind of the spaceship
-		ctx.moveTo(this.x+10, this.y-10);
-		ctx.lineTo(this.x+25, this.y+10);
-		ctx.lineTo(this.x+25, this.y+25);
-		ctx.lineTo(this.x+5, this.y+25);
-		ctx.lineTo(this.x+5, this.y+7);
+		ctx.moveTo(this.x + 10, this.y-10);
+		ctx.lineTo(this.x + 25, this.y+10);
+		ctx.lineTo(this.x + 25, this.y+25);
+		ctx.lineTo(this.x + 5, this.y+25);
+		ctx.lineTo(this.x + 5, this.y+7);
 
 		ctx.moveTo(this.x-5, this.y+20);
 		ctx.lineTo(this.x+5, this.y+20);
@@ -149,9 +153,9 @@ function loadCanvas() {
 	canvas.id = 'main';
 	canvas.width = '1000';
 	canvas.height = '640';
-	var start = document.getElementById('start-page');
+	var startPage = document.getElementById('start-page');
 	var footer = document.getElementById('credit');
-	document.body.removeChild(start);
+	document.body.removeChild(startPage);
 	document.body.insertBefore(canvas, footer);
     Canvasloaded = true;
     console.log("success");
@@ -178,7 +182,7 @@ function infoBar() {
 	ctx.stroke();
 }
 
-function loadBlackHole() {
+function loadBlackHole(x, y) {
 	var c = document.getElementById("main");
     window.ctx = c.getContext("2d");
     
@@ -186,7 +190,7 @@ function loadBlackHole() {
     
     blackHole.onload = function() {
 
-    	ctx.drawImage(blackHole, 100, 100, 50, 50);
+    	ctx.drawImage(blackHole, x, y, 50, 50);
     	console.log("successful");
     }
 
@@ -197,6 +201,30 @@ function loadBlackHole() {
 function startGame() {
 	// draw the Moon, Planet, Spaceship and Ufo in the canvas
 	infoBar();
+	while (spaceObject.length < 10) {
+		var type = Math.floor(Math.random() * 4);
+		var x = Math.floor(Math.random() * 950) + 25;
+		var y = Math.floor(Math.random() * 535) + 65;
+		var collision = checkCollision(spaceObject, x, y);
+
+		if (!collision) {
+			switch(type) {
+				case 0:
+					spaceObject.push(new Moon(x, y));
+					break;
+				case 1:
+					spaceObject.push(new Planet(x, y));
+					break;
+				case 2:
+					spaceObject.push(new Ufo(x, y));
+					break;
+				case 3:
+					spaceObject.push(new Spaceship(x, y));
+					break;
+			}
+		}
+
+	}
 	// var moon = new Moon(100, 200, (50/3));
 	// moon.draw();
 	// var planet = new Planet(200, 300);
@@ -205,6 +233,9 @@ function startGame() {
 	// ufo.draw();
 	// var spaceship = new Spaceship(500, 400);
 	// spaceship.draw();
-	loadBlackHole();
+	// loadBlackHole(200, 100);
+	for (object in spaceObject) {
+		spaceObject[object].draw();
+	}
 	
 }
