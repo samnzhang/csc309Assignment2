@@ -145,7 +145,7 @@ Spaceship.prototype.draw=function() {
    	 	ctx.fillStyle='#000000';
    	 	// Body of the spaceship
 		ctx.moveTo(this.x+10, this.y-10);
-		ctx.ellipse(this.x, this.y-10, 10, 20, 0, 0, 2 * Math.PI);
+		ctx.ellipse(this.x, this.y-10, 10, 17, 0, 0, 2 * Math.PI);
 		ctx.fill();
 
 
@@ -240,7 +240,7 @@ function loadBlackHole() {
 		y = Math.floor(Math.random() * 535) + 65;
 
 	} 
-	while (checkCollision(spaceObject, x, y, 1) || checkCollision(blackHoles, x, y, 1) && blackHoles.length < 15);
+	while ((checkCollision(spaceObject, x, y, 1) || checkCollision(blackHoles, x, y, 1)) && blackHoles.length < 15);
 
 	if (blackHoles.length < 15) {
 		blackHoles.push(new BlackHole(x, y));
@@ -256,6 +256,7 @@ function initObjects() {
 		var collision = checkCollision(spaceObject, x, y, 0);
 		console.log(collision);
 		if (!collision) {
+
 			switch(type) {
 				case 0:
 					spaceObject.push(new Moon(x, y));
@@ -270,9 +271,11 @@ function initObjects() {
 					spaceObject.push(new Spaceship(x, y));
 					break;
 			}
+
 		}
 
 	}
+
 }
 
 function moveObject() {
@@ -284,8 +287,8 @@ function moveObject() {
 		temp.draw();
 		while ((temp.x + temp.direction.x) <= 25 || 
 			(temp.x + temp.direction.x) >= 975 || 
-			(temp.y + temp.direction.y) <= 70 || 
-			(temp.y + temp.direction.y) >= 610) {
+			(temp.y + temp.direction.y) <= 65 || 
+			(temp.y + temp.direction.y) >= 615) {
 			temp.direction = generateDirection();
 		} 
 		temp.x += temp.direction.x;
@@ -295,7 +298,7 @@ function moveObject() {
 	for (item in blackHoles) {
 		ctx.drawImage(blackHole, blackHoles[item].x-25, blackHoles[item].y-25, 50, 50);
 	}
-	
+
 	setTimeout(moveObject, 33);
 }
 
@@ -309,6 +312,7 @@ function startGame() {
 	infoBar();
 	initObjects();
 	setInterval(loadBlackHole, 1000);
+
 	moveObject();
 
 	// var moon = new Moon(100, 200, (50/3));
