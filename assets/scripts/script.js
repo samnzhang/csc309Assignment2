@@ -150,7 +150,7 @@ Spaceship.prototype.draw=function() {
 
 
 		// left wind of the spaceship
-		ctx.moveTo(this.x-10, this.y-5);
+		ctx.moveTo(this.x-10, this.y-3);
 		ctx.lineTo(this.x-25, this.y+12);
 		ctx.lineTo(this.x-25, this.y+25);
 		ctx.lineTo(this.x-5, this.y+25);
@@ -158,7 +158,7 @@ Spaceship.prototype.draw=function() {
 
 
 		// right wind of the spaceship
-		ctx.moveTo(this.x + 10, this.y-5);
+		ctx.moveTo(this.x + 10, this.y-3);
 		ctx.lineTo(this.x + 25, this.y+12);
 		ctx.lineTo(this.x + 25, this.y+25);
 		ctx.lineTo(this.x + 5, this.y+25);
