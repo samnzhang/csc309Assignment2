@@ -239,9 +239,11 @@ function loadBlackHole() {
 		y = Math.floor(Math.random() * 535) + 65;
 
 	} 
-	while (checkCollision(spaceObject, x, y, 1) || checkCollision(blackHoles, x, y, 1));
+	while (checkCollision(spaceObject, x, y, 1) || checkCollision(blackHoles, x, y, 1) && blackHoles.length < 15);
 
-	blackHoles.push(new BlackHole(x, y));
+	if (blackHoles.length < 15) {
+		blackHoles.push(new BlackHole(x, y));
+	}
 }
 
 
