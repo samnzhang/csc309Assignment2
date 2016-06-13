@@ -72,12 +72,12 @@ Moon.prototype.draw=function() {
 		ctx.beginPath();
 		ctx.moveTo(this.x, this.y-25);
 		var diff = Math.sqrt(1250)/2;
-		ctx.arc(this.x+12.5, this.y-12.5, diff, (270-45)*Math.PI/180, (360+45)*Math.PI/180, true);
-		ctx.moveTo(this.x, this.y-25);
+		ctx.arc(this.x+13, this.y-13, diff, (270-25)*Math.PI/180, (360+25)*Math.PI/180, true);
+		//ctx.moveTo(this.x, this.y-25);
 		ctx.fillStyle="#FFFFFF";
 		ctx.fill();
 		
-		ctx.stroke();
+		//ctx.stroke();
  	}
 
 }
@@ -142,9 +142,11 @@ Spaceship.prototype.draw=function() {
     	window.ctx = c.getContext("2d");
    	 	ctx.beginPath();
    	 	
+   	 	ctx.fillStyle='#000000';
    	 	// Body of the spaceship
 		ctx.moveTo(this.x+10, this.y-10);
 		ctx.ellipse(this.x, this.y-10, 10, 20, 0, 0, 2 * Math.PI);
+		ctx.fill();
 
 
 		// left wind of the spaceship
@@ -162,9 +164,8 @@ Spaceship.prototype.draw=function() {
 		ctx.lineTo(this.x + 5, this.y+25);
 		ctx.lineTo(this.x + 5, this.y+7);
 
-		ctx.moveTo(this.x-5, this.y+20);
-		ctx.lineTo(this.x+5, this.y+20);
-		ctx.stroke();
+		ctx.rect(this.x-5, this.y+7, 10, 12);
+		ctx.fill();
 	}
 }
 
