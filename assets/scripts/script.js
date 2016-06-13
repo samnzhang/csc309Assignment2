@@ -9,13 +9,41 @@ window.onload = function() {
 	
 }
 
-function checkCollision(spaceOject, x, y) {
-	for (var i = 0; i < spaceObject.length; i++) {
-		if ((spaceObject[i].x + 50 > x && spaceObject[i].x - 50 < x &&
+function checkCollision(array, x, y, mode) {
+	for (var i = 0; i < array.length; i++) {
+		/*
+		if ((spaceObject[i].x + 50 > x || spaceObject[i].x - 50 > x &&
 			spaceObject[i].y + 50 > y && spaceObject[i].y - 50 < y &&
 			x > 0 + 25 && x < 1000 - 25 && y > 0 + 25 && y < 640 - 25)) {
 			return true;
 		}
+		*/ 
+
+		
+		if (mode == 0) {
+			// mode for spaceObject
+			var diff = 50;
+		} else {
+			// mode for blackhole
+			var diff = 100;
+		}
+		
+		var tempRX = array[i].x+diff;
+		var tempLX = array[i].x-diff;
+		var tempBY = array[i].y+diff;
+		var tempTY = array[i].y-diff;
+		if (tempRX < x) {
+			continue;
+		} else if (tempLX > x) {
+			continue;
+		} else if (tempBY < y) {
+			continue;
+		} else if (tempTY > y) {
+			continue;
+		} else {
+			return true;
+		}
+
 	}
 	return false;
 
@@ -205,24 +233,25 @@ var BlackHole = function(x, y) {
 
 function loadBlackHole() {
 
+
 	do {
 		x = Math.floor(Math.random() * 950) + 25;
-			y = Math.floor(Math.random() * 535) + 65;
+		y = Math.floor(Math.random() * 535) + 65;
+
 	} 
-	while (checkCollision(spaceObject, x, y) || checkCollision(blackHoles, x, y));
+	while (checkCollision(spaceObject, x, y, 1) || checkCollision(blackHoles, x, y, 1));
 
 	blackHoles.push(new BlackHole(x, y));
 }
 
-setInterval(loadBlackHole, 1000);
 
 function initObjects() {
 	while (spaceObject.length < 10) {
 		var type = Math.floor(Math.random() * 4);
 		var x = Math.floor(Math.random() * 950) + 25;
 		var y = Math.floor(Math.random() * 535) + 65;
-		var collision = checkCollision(spaceObject, x, y);
-
+		var collision = checkCollision(spaceObject, x, y, 0);
+		console.log(collision);
 		if (!collision) {
 			switch(type) {
 				case 0:
@@ -261,16 +290,22 @@ function moveObject() {
 	}
 
 	for (item in blackHoles) {
-		ctx.drawImage(blackHole, blackHoles[item].x, blackHoles[item].y, 50, 50);
+		ctx.drawImage(blackHole, blackHoles[item].x-25, blackHoles[item].y-25, 50, 50);
 	}
 	
 	setTimeout(moveObject, 33);
 }
 
+
+
 function startGame() {
 	// draw the Moon, Planet, Spaceship and Ufo in the canvas
+
+	
+
 	infoBar();
 	initObjects();
+	setInterval(loadBlackHole, 1000);
 	moveObject();
 
 	// var moon = new Moon(100, 200, (50/3));
