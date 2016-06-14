@@ -72,7 +72,7 @@ Moon.prototype.draw=function() {
 		ctx.beginPath();
 		ctx.moveTo(this.x, this.y-25);
 		var diff = Math.sqrt(1250)/2;
-		ctx.arc(this.x+13, this.y-13, diff, (270-25)*Math.PI/180, (360+25)*Math.PI/180, true);
+		ctx.arc(this.x+13, this.y-13, diff, (270-26)*Math.PI/180, (360+26)*Math.PI/180, true);
 		//ctx.moveTo(this.x, this.y-25);
 		ctx.fillStyle="#FFFFFF";
 		ctx.fill();
@@ -145,7 +145,7 @@ Spaceship.prototype.draw=function() {
    	 	ctx.fillStyle='#000000';
    	 	// Body of the spaceship
 		ctx.moveTo(this.x+10, this.y-10);
-		ctx.ellipse(this.x, this.y-10, 10, 17, 0, 0, 2 * Math.PI);
+		ctx.ellipse(this.x, this.y-10, 10, 15, 0, 0, 2 * Math.PI);
 		ctx.fill();
 
 
@@ -155,7 +155,7 @@ Spaceship.prototype.draw=function() {
 		ctx.lineTo(this.x-25, this.y+25);
 		ctx.lineTo(this.x-5, this.y+25);
 		ctx.lineTo(this.x-5, this.y+7);
-
+		ctx.fill();
 
 		// right wind of the spaceship
 		ctx.moveTo(this.x + 10, this.y-3);
@@ -163,8 +163,9 @@ Spaceship.prototype.draw=function() {
 		ctx.lineTo(this.x + 25, this.y+25);
 		ctx.lineTo(this.x + 5, this.y+25);
 		ctx.lineTo(this.x + 5, this.y+7);
+		ctx.fill();
 
-		ctx.rect(this.x-5, this.y+7, 10, 12);
+		ctx.rect(this.x-9, this.y-3, 15, 22);
 		ctx.fill();
 	}
 }
