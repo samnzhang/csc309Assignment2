@@ -53,10 +53,10 @@ function clickBlackHole(event) {
 	var mouseY = event.y - c.offsetTop;
 
 
-	if (checkCollision(blackHoles, mouseX, mouseY, 0)) {
+	if (checkCollision(blackHoles, mouseX, mouseY, 3)) {
 		var length = blackHoles.length;
 		for (var i = 0; i < length; i++) {
-			if (checkCollision([blackHoles[i]], mouseX, mouseY, 0)) {
+			if (checkCollision([blackHoles[i]], mouseX, mouseY, 3)) {
 				for (item in blackHoles[i].pulling) {
 					blackHoles[i].pulling[item].pull = null;
 				}
@@ -96,8 +96,10 @@ function checkCollision(things, x, y, type) {
 
 	if (type == 0) {
 		difference = 50;
-	} else {
+	} else if (type == 1) {
 		difference = 100;
+	} else {
+		difference = 25;
 	}
 
 	for (var i = 0; i < things.length; i++) {
@@ -154,6 +156,8 @@ function checkInHorizon(x, y) {
 	}
 	return null;
 }
+
+
 function getDirection() {
 	var direction = directions[Math.floor(Math.random() * 4)];
 	return direction;
