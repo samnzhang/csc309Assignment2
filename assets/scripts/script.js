@@ -16,7 +16,7 @@ window.onload = function() {
 	window.blackHoleBlack = new Image();
 	blackHoleBlack.src = 'assets/images/black-hole.svg';
 
-	c.addEventListener("mousedown", clickBlackHole, false);
+	c.setAttribute("onmousedown", "clickBlackHole(event)");
 	window.pause = false;
 }
 
@@ -50,16 +50,16 @@ function infoBar() {
 }
 
 function clickBlackHole(event) {
-	var mouseX = event.x - c.offsetLeft;
-	var mouseY = event.y - c.offsetTop;
-
+	var mouseX = event.clientX - c.getBoundingClientRect().left;
+	var mouseY = event.clientY - c.getBoundingClientRect().top;
 
 	if (checkCollision(blackHoles, mouseX, mouseY, 3)) {
 		if (!pause) {
-			var length = blackHoles.length;
-			for (var i = 0; i < length; i++) {
-				if (checkCollision([blackHoles[i]], mouseX, mouseY, 3)) {
-					for (item in blackHoles[i].pulling) {
+			for (var i = 0; i < blackHoles.length; i++) {
+				var blackHole = [];
+				blackHole.push(blackHoles[i]);
+				if (checkCollision(blackHole, mouseX, mouseY, 3)) {
+					for(item in blackHoles[i].pulling) {
 						blackHoles[i].pulling[item].pull = null;
 					}
 					blackHoles.splice(i, 1);
@@ -67,6 +67,7 @@ function clickBlackHole(event) {
 			}
 		}
 	}
+		
 
 	if (checkPause(mouseX, mouseY)) {
 		pause = !pause;
