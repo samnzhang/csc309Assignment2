@@ -17,6 +17,7 @@ window.onload = function() {
 	blackHoleBlack.src = 'assets/images/black-hole.svg';
 
 	c.addEventListener("mousedown", clickBlackHole, false);
+	window.pause = false;
 }
 
 function displayCanvas() {
@@ -54,15 +55,22 @@ function clickBlackHole(event) {
 
 
 	if (checkCollision(blackHoles, mouseX, mouseY, 3)) {
-		var length = blackHoles.length;
-		for (var i = 0; i < length; i++) {
-			if (checkCollision([blackHoles[i]], mouseX, mouseY, 3)) {
-				for (item in blackHoles[i].pulling) {
-					blackHoles[i].pulling[item].pull = null;
+		if (!pause) {
+			var length = blackHoles.length;
+			for (var i = 0; i < length; i++) {
+				if (checkCollision([blackHoles[i]], mouseX, mouseY, 3)) {
+					for (item in blackHoles[i].pulling) {
+						blackHoles[i].pulling[item].pull = null;
+					}
+					blackHoles.splice(i, 1);
 				}
-				blackHoles.splice(i, 1);
 			}
 		}
+	}
+
+	if (checkPause(mouseX, mouseY)) {
+		pause = !pause;
+		console.log(pause);
 	}
 }
 
@@ -125,6 +133,31 @@ function checkCollision(things, x, y, type) {
 	}
 	return false;
 }
+
+function checkPause(x, y) {
+
+	var xRight;
+	var xLeft;
+	var yTop;
+	var yBottom;
+
+	
+
+	xRight = 870;
+	xLeft = 770;
+	yTop = 5;
+	yBottom = 35;
+
+	
+
+	if (xRight < x || xLeft > x || yTop > y || yBottom < y) {
+		return false;
+	} else {
+		return true;
+	}
+	
+}
+
 
 function checkInHorizon(x, y) {
 	var difference = 100;
@@ -226,64 +259,68 @@ function calculatePullDirection(x, y, targetX, targetY, t) {
 }
 
 function moveSpaceThings() {
-	ctx.clearRect(0, 40, 1000, 600);
-	drawSpaceThings();
-	drawBlackHoles();
-	for (item in spaceThings) {
-		var object = spaceThings[item];
-		if (object.pull == null) {
-			while ((object.x + object.direction.x) <= 25 || 
-				(object.x + object.direction.x) >= 975 || 
-				(object.y + object.direction.y) <= 65 || 
-				(object.y + object.direction.y) >= 615) {
-				object.direction = getDirection();
-			} 
+	if (!pause) {
+		ctx.clearRect(0, 40, 1000, 600);
+		drawSpaceThings();
+		drawBlackHoles();
+		for (item in spaceThings) {
+			var object = spaceThings[item];
+			if (object.pull == null) {
+				while ((object.x + object.direction.x) <= 25 || 
+					(object.x + object.direction.x) >= 975 || 
+					(object.y + object.direction.y) <= 65 || 
+					(object.y + object.direction.y) >= 615) {
+					object.direction = getDirection();
+				} 
 			
-			object.pull = checkInHorizon(object.x, object.y);
-			if (object.pull != null) {
-				object.pull.pulling.push(object);
-			}
-		} else {
-			var directionX;
-			var directiony;
+				object.pull = checkInHorizon(object.x, object.y);
+				if (object.pull != null) {
+					object.pull.pulling.push(object);
+				}
+			} else {
+				var directionX;
+				var directiony;
 
-			switch (object.pull.type) {
-				case 0: 
-					object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 50);
-					break;
-				case 1:
-					object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 30);
-					break;
-				case 2:
-					object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 15);
+				switch (object.pull.type) {
+					case 0: 
+						object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 50);
+						break;
+					case 1:
+						object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 30);
+						break;
+					case 2:
+						object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 15);
 
-			}
+				}
 			
+			}
+			object.x += object.direction.x;
+			object.y += object.direction.y;
+
 		}
-		object.x += object.direction.x;
-		object.y += object.direction.y;
+		eventHorizon();
 	}
-	eventHorizon();
 	setTimeout(moveSpaceThings, 33);
 }
 
 function insertBlackHoles() {
+	if (!pause) {
+		do {
+			var x = Math.floor(Math.random() * 950) + 25;
+			var y = Math.floor(Math.random() * 535) + 65;
 
-	do {
-		var x = Math.floor(Math.random() * 950) + 25;
-		var y = Math.floor(Math.random() * 535) + 65;
+		} 
+		while (checkCollision(spaceThings, x, y, 1) || checkCollision(blackHoles, x, y, 1) && blackHoles.length < 20);
 
-	} 
-	while (checkCollision(spaceThings, x, y, 1) || checkCollision(blackHoles, x, y, 1) && blackHoles.length < 20);
-
-	var type = Math.floor(Math.random() * 15);
-	if (blackHoles.length < 15) {
-		if (type < 9) {
-			blackHoles.push(new BlackHole(x, y, 0));
-		} else if (type >= 9 && type < 13) {
-			blackHoles.push(new BlackHole(x, y, 1));
-		} else {
-			blackHoles.push(new BlackHole(x, y, 2));
+		var type = Math.floor(Math.random() * 15);
+		if (blackHoles.length < 15) {
+			if (type < 9) {
+				blackHoles.push(new BlackHole(x, y, 0));
+			} else if (type >= 9 && type < 13) {
+				blackHoles.push(new BlackHole(x, y, 1));
+			} else {
+				blackHoles.push(new BlackHole(x, y, 2));
+			}
 		}
 	}
 }
