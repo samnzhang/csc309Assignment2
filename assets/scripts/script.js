@@ -145,7 +145,7 @@ Spaceship.prototype.draw=function() {
    	 	ctx.fillStyle='#000000';
    	 	// Body of the spaceship
 		ctx.moveTo(this.x+10, this.y-10);
-		ctx.ellipse(this.x, this.y-10, 10, 20, 0, 0, 2 * Math.PI);
+		ctx.ellipse(this.x, this.y-10, 10, 17, 0, 0, 2 * Math.PI);
 		ctx.fill();
 
 
@@ -284,8 +284,8 @@ function moveObject() {
 		temp.draw();
 		while ((temp.x + temp.direction.x) <= 25 || 
 			(temp.x + temp.direction.x) >= 975 || 
-			(temp.y + temp.direction.y) <= 70 || 
-			(temp.y + temp.direction.y) >= 610) {
+			(temp.y + temp.direction.y) <= 65 || 
+			(temp.y + temp.direction.y) >= 615) {
 			temp.direction = generateDirection();
 		} 
 		temp.x += temp.direction.x;
