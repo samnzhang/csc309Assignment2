@@ -86,7 +86,7 @@ function checkCollision(things, x, y, type) {
 		yTop = things[i].y - difference;
 		yBottom = things[i].y + difference;
 
-		console.log("stuck");
+	
 
 		if (xRight < x) {
 			continue;
@@ -103,6 +103,36 @@ function checkCollision(things, x, y, type) {
 	return false;
 }
 
+function checkInHorizon(x, y) {
+	var difference = 100;
+	var xRight;
+	var xLeft;
+	var yTop;
+	var yBottom;
+
+	for (var i = 0; i < blackHoles.length; i++) {
+
+		xRight = blackHoles[i].x + difference;
+		xLeft = blackHoles[i].x - difference;
+		yTop = blackHoles[i].y - difference;
+		yBottom = blackHoles[i].y + difference;
+
+
+
+		if (xRight < x) {
+			continue;
+		} else if (xLeft > x) {
+			continue;
+		} else if (yTop > y) {
+			continue;
+		} else if (yBottom < y) {
+			continue;
+		} else {
+			return blackHoles[i];
+		}
+	}
+	return null;
+}
 function getDirection() {
 	var direction = directions[Math.floor(Math.random() * 4)];
 	return direction;
@@ -160,18 +190,48 @@ function drawSpaceThings() {
 	}
 }
 
+
+function calculatePullDirection(x, y, targetX, targetY, t) {
+	var vector = new Direction();
+	var xdirect;
+	var ydirect;
+	vector.x  = (targetX - x) / t;
+	vector.y = (targetY - y) / t;
+	return vector;
+}
+
 function moveSpaceThings() {
 	ctx.clearRect(0, 40, 1000, 600);
 	drawSpaceThings();
 	drawBlackHoles();
 	for (item in spaceThings) {
 		var object = spaceThings[item];
-		while ((object.x + object.direction.x) <= 25 || 
-			(object.x + object.direction.x) >= 975 || 
-			(object.y + object.direction.y) <= 65 || 
-			(object.y + object.direction.y) >= 615) {
-			object.direction = getDirection();
-		} 
+		if (object.pull == null) {
+			while ((object.x + object.direction.x) <= 25 || 
+				(object.x + object.direction.x) >= 975 || 
+				(object.y + object.direction.y) <= 65 || 
+				(object.y + object.direction.y) >= 615) {
+				object.direction = getDirection();
+			} 
+			
+			object.pull = checkInHorizon(object.x, object.y);
+		} else {
+			var directionX;
+			var directiony;
+
+			switch (object.pull.type) {
+				case 0: 
+					object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 50);
+					break;
+				case 1:
+					object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 30);
+					break;
+				case 2:
+					object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 15);
+
+			}
+			console.log(object.direction.x + ", " + object.direction.y);
+		}
 		object.x += object.direction.x;
 		object.y += object.direction.y;
 	}
