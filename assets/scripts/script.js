@@ -16,6 +16,7 @@ window.onload = function() {
 	window.blackHoleBlack = new Image();
 	blackHoleBlack.src = 'assets/images/black-hole.svg';
 
+	c.addEventListener("mousedown", clickBlackHole, false);
 }
 
 function displayCanvas() {
@@ -47,6 +48,25 @@ function infoBar() {
 	ctx.stroke();
 }
 
+function clickBlackHole(event) {
+	var mouseX = event.x - c.offsetLeft;
+	var mouseY = event.y - c.offsetTop;
+
+
+	if (checkCollision(blackHoles, mouseX, mouseY, 0)) {
+		var length = blackHoles.length;
+		for (var i = 0; i < length; i++) {
+			if (checkCollision([blackHoles[i]], mouseX, mouseY, 0)) {
+				for (item in blackHoles[i].pulling) {
+					blackHoles[i].pulling[item].pull = null;
+				}
+				blackHoles.splice(i, 1);
+			}
+		}
+	}
+}
+
+
 function SpaceThing(x, y, type) {
 	this.x = x;
 	this.y = y;
@@ -59,6 +79,7 @@ function BlackHole(x, y, type) {
 	this.x = x;
 	this.y = y;
 	this.type = type;
+	this.pulling = [];
 }
 
 function Direction(x, y) {
@@ -215,6 +236,9 @@ function moveSpaceThings() {
 			} 
 			
 			object.pull = checkInHorizon(object.x, object.y);
+			if (object.pull != null) {
+				object.pull.pulling.push(object);
+			}
 		} else {
 			var directionX;
 			var directiony;
@@ -230,7 +254,7 @@ function moveSpaceThings() {
 					object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 15);
 
 			}
-			console.log(object.direction.x + ", " + object.direction.y);
+			
 		}
 		object.x += object.direction.x;
 		object.y += object.direction.y;
