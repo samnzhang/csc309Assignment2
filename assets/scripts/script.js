@@ -97,8 +97,8 @@ Planet.prototype.draw=function() {
     	window.ctx = c.getContext("2d");
     	ctx.beginPath();
 		ctx.ellipse(this.x, this.y, Math.sqrt(1250), 5, 135*Math.PI/180, 135*Math.PI/180, 45 * Math.PI/180);
-		ctx.moveTo(this.x+25,this.y);
-		ctx.arc(this.x, this.y, 25, 0, 2*Math.PI, false);
+		ctx.moveTo(this.x+22,this.y);
+		ctx.arc(this.x, this.y, 22, 0, 2*Math.PI, false);
 		ctx.stroke();
 
 	}
@@ -241,9 +241,9 @@ function loadBlackHole() {
 		y = Math.floor(Math.random() * 535) + 65;
 
 	} 
-	while (checkCollision(spaceObject, x, y, 1) || checkCollision(blackHoles, x, y, 1) && blackHoles.length < 15);
+	while (checkCollision(spaceObject, x, y, 1) || checkCollision(blackHoles, x, y, 1) && blackHoles.length < 20);
 
-	if (blackHoles.length < 15) {
+	if (blackHoles.length < 20) {
 		blackHoles.push(new BlackHole(x, y));
 	}
 }
@@ -296,10 +296,19 @@ function moveObject() {
 	for (item in blackHoles) {
 		ctx.drawImage(blackHole, blackHoles[item].x-25, blackHoles[item].y-25, 50, 50);
 	}
-	
+	disappear();
 	setTimeout(moveObject, 33);
 }
 
+function disappear() {
+	for (var i = 0; i < spaceObject.length; i++) {
+		var collision = checkCollision(blackHoles, spaceObject[i].x, spaceObject[i].y, 0);
+
+		if (collision) {
+			spaceObject.splice(i, 1);
+		}
+	}
+}
 
 
 function startGame() {
