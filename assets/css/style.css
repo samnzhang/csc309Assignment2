@@ -1,12 +1,12 @@
-section#start-page {
+section#start {
 	margin: 150px;
 	margin-top: 10%;
 	padding: 150px;
 	text-align: center;
-
 	border: black;
 	border-style: solid;
 	border-width: 1px;
+	font: sans-serif;
 }
 
 canvas#main {
@@ -14,7 +14,7 @@ canvas#main {
 	left: 10%;
 	border: solid;
 	border-width: 1px;
-	padding-left: 
+	display: none;
 }
 
 span#credit {

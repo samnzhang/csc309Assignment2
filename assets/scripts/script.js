@@ -1,224 +1,41 @@
-var Canvasloaded = false;
-
-var spaceObject = [];
-var blackHoles = [];
-var blackHole = new Image();
-blackHole.src = 'assets/images/black_hole.svg';
-
 window.onload = function() {
-	
-}
+	window.c = document.getElementById("main");
+	window.ctx = c.getContext("2d");
 
-function checkCollision(array, x, y, mode) {
-	for (var i = 0; i < array.length; i++) {
-		/*
-		if ((spaceObject[i].x + 50 > x || spaceObject[i].x - 50 > x &&
-			spaceObject[i].y + 50 > y && spaceObject[i].y - 50 < y &&
-			x > 0 + 25 && x < 1000 - 25 && y > 0 + 25 && y < 640 - 25)) {
-			return true;
-		}
-		*/ 
+	window.spaceThings = [];
+	window.blackHoles = [];
+	window.directions = [new Direction(1, 1), new Direction(1, -1), 
+						new Direction(-1, 1), new Direction(-1, -1)];
 
-		
-		if (mode == 0) {
-			// mode for spaceObject
-			var diff = 50;
-		} else {
-			// mode for blackhole
-			var diff = 100;
-		}
-		
-		var tempRX = array[i].x+diff;
-		var tempLX = array[i].x-diff;
-		var tempBY = array[i].y+diff;
-		var tempTY = array[i].y-diff;
-		if (tempRX < x) {
-			continue;
-		} else if (tempLX > x) {
-			continue;
-		} else if (tempBY < y) {
-			continue;
-		} else if (tempTY > y) {
-			continue;
-		} else {
-			return true;
-		}
+	window.blackHoleBlue = new Image();
+	blackHoleBlue.src = 'assets/images/blue-hole.svg';
 
-	}
-	return false;
+	window.blackHolePurple = new Image();
+	blackHolePurple.src = 'assets/images/purple-hole.svg';
+
+	window.blackHoleBlack = new Image();
+	blackHoleBlack.src = 'assets/images/black-hole.svg';
 
 }
 
-// object Moon
-function Moon(x, y) {
-	this.x = x;
-	this.y = y;
-	this.direction = generateDirection();
-}
-
-
-Moon.prototype.draw=function() {
-	// If Canvas is loaded then we call the method then the moon would be drawn
-	// Otherwise nothing would be drawn
-	if (Canvasloaded) {
-    	var c = document.getElementById("main");
-    	window.ctx = c.getContext("2d"); // Dealing with a global context is easier
-
-    	ctx.beginPath();
-		ctx.arc(this.x, this.y, 25, 270*Math.PI/180, 2*Math.PI, true);
-		ctx.fillStyle="#000000";
-		ctx.fill();
-		ctx.closePath();
-		ctx.beginPath();
-		ctx.moveTo(this.x, this.y-25);
-		var diff = Math.sqrt(1250)/2;
-		ctx.arc(this.x+13, this.y-13, diff, (270-26)*Math.PI/180, (360+26)*Math.PI/180, true);
-		//ctx.moveTo(this.x, this.y-25);
-		ctx.fillStyle="#FFFFFF";
-		ctx.fill();
-		
-		//ctx.stroke();
- 	}
-
-}
-
-
-// Object
-Planet = function(x, y) {
-	this.x = x;
-	this.y = y;
-	this.direction = generateDirection();
-
-}
-
-Planet.prototype.draw=function() {
-	if (Canvasloaded) {
-		var c = document.getElementById("main");
-    	window.ctx = c.getContext("2d");
-    	ctx.beginPath();
-		ctx.ellipse(this.x, this.y, Math.sqrt(1250), 5, 135*Math.PI/180, 135*Math.PI/180, 45 * Math.PI/180);
-		ctx.moveTo(this.x+22,this.y);
-		ctx.arc(this.x, this.y, 22, 0, 2*Math.PI, false);
-		ctx.stroke();
-
-	}
-}
-
-
-// Obejct Ufo
-Ufo = function(x, y) {
-	this.x = x;
-	this.y = y;
-	this.direction = generateDirection();
-
-}
-
-Ufo.prototype.draw=function() {
-	if (Canvasloaded) {
-		var c = document.getElementById("main");
-    	window.ctx = c.getContext("2d");
-    	ctx.beginPath();
-		ctx.moveTo(this.x+Math.sqrt(200), this.y+Math.sqrt(200));
-		ctx.arc(this.x, this.y, 20, 45*Math.PI/180, 225*Math.PI/180, true);
-		ctx.lineTo(this.x+Math.sqrt(200), this.y+Math.sqrt(200));
-		ctx.moveTo(this.x+15, this.y+15);
-		ctx.ellipse(this.x, this.y, 10, Math.sqrt(1250),135*Math.PI/180, 210*Math.PI/180, 150* Math.PI/180);
-		ctx.stroke();
-	}
-}
-
-
-// Object Spaceship
-Spaceship = function(x, y) {
-	this.x = x;
-	this.y = y;
-	this.direction = generateDirection();
-
-}
-
-Spaceship.prototype.draw=function() {
-	if (Canvasloaded) {
-		var c = document.getElementById("main");
-    	window.ctx = c.getContext("2d");
-   	 	ctx.beginPath();
-   	 	
-   	 	ctx.fillStyle='#000000';
-   	 	// Body of the spaceship
-		ctx.moveTo(this.x+10, this.y-10);
-		ctx.ellipse(this.x, this.y-10, 10, 15, 0, 0, 2 * Math.PI);
-		ctx.fill();
-
-
-		// left wind of the spaceship
-		ctx.moveTo(this.x-10, this.y-3);
-		ctx.lineTo(this.x-25, this.y+12);
-		ctx.lineTo(this.x-25, this.y+25);
-		ctx.lineTo(this.x-5, this.y+25);
-		ctx.lineTo(this.x-5, this.y+7);
-		ctx.fill();
-
-		// right wind of the spaceship
-		ctx.moveTo(this.x + 10, this.y-3);
-		ctx.lineTo(this.x + 25, this.y+12);
-		ctx.lineTo(this.x + 25, this.y+25);
-		ctx.lineTo(this.x + 5, this.y+25);
-		ctx.lineTo(this.x + 5, this.y+7);
-		ctx.fill();
-
-		ctx.rect(this.x-9, this.y-3, 15, 22);
-		ctx.fill();
-	}
-}
-
-function Direction(x, y) {
-	this.x = x;
-	this.y = y;
-
-}
-
-
-var directions = [new Direction(1, 1),  new Direction(-1, 1), new Direction(1, -1), 
-					new Direction(-1, -1)];
-// object button
-
-/* function button (xTop, xBot, yLeft, yRight) {
-	this.xTop = xTop;
-	this.xBot = xBot;
-	this.yLeft = yLeft;
-	this.yRight = yRight;
-}*/
-
-
-function generateDirection() {
-	var direction = directions[Math.floor(Math.random() * 4)];
-	return direction;
-}
-
-// Load the Canvas in the webpage
-function loadCanvas() {
-	var canvas = document.createElement('canvas');
-	canvas.id = 'main';
-	canvas.width = '1000';
-	canvas.height = '640';
-	var startPage = document.getElementById('start-page');
-	var footer = document.getElementById('credit');
-	document.body.removeChild(startPage);
-	document.body.insertBefore(canvas, footer);
-    Canvasloaded = true;
-    console.log("success");
-    startGame();
+function displayCanvas() {
+	var canvas = document.getElementById("main");
+	canvas.style.display = 'initial';
+	var start = document.getElementById("start");
+	start.style.display = 'none';
+	// infoBar();
+	startGame();
 }
 
 function infoBar() {
-	var c = document.getElementById("main");
-    window.ctx = c.getContext("2d");
-    ctx.rect(0, 0, 1000, 40);
-	ctx.stroke();
-
 	var level = "Level " + 1;
 	var score = "Score: " + 200;
 	var timer = 60 + " seconds";
 	ctx.font = "20px sans-serif";
+	ctx.fillStyle = "black";
+
+	ctx.rect(0, 0, 1000, 40);
+	ctx.stroke();
 
 	ctx.fillText(level, 20, 27);
 	ctx.fillText(score, 450, 27);
@@ -226,110 +43,438 @@ function infoBar() {
 
 	ctx.fillText("Pause", 793, 27);
 	ctx.rect(770, 5, 100, 30);
+
 	ctx.stroke();
 }
-var BlackHole = function(x, y) {
+
+function SpaceThing(x, y, type) {
+	this.x = x;
+	this.y = y;
+	this.direction = getDirection();
+	this.pull = null;
+	this.type = type;
+}
+
+function BlackHole(x, y, type) {
+	this.x = x;
+	this.y = y;
+	this.type = type;
+}
+
+function Direction(x, y) {
 	this.x = x;
 	this.y = y;
 }
 
-function loadBlackHole() {
+function checkCollision(things, x, y, type) {
+	var difference;
+	var xRight;
+	var xLeft;
+	var yTop;
+	var yBottom;
 
+	if (type == 0) {
+		difference = 50;
+	} else {
+		difference = 100;
+	}
+
+	for (var i = 0; i < things.length; i++) {
+
+		xRight = things[i].x + difference;
+		xLeft = things[i].x - difference;
+		yTop = things[i].y - difference;
+		yBottom = things[i].y + difference;
+
+		console.log("stuck");
+
+		if (xRight < x) {
+			continue;
+		} else if (xLeft > x) {
+			continue;
+		} else if (yTop > y) {
+			continue;
+		} else if (yBottom < y) {
+			continue;
+		} else {
+			return true;
+		}
+	}
+	return false;
+}
+
+function getDirection() {
+	var direction = directions[Math.floor(Math.random() * 4)];
+	return direction;
+}
+
+function insertSpaceThings() {
+
+	for (var i = 0; i < 10; i++) {
+		do {
+			var x = Math.floor(Math.random() * 950) + 25;
+			var y = Math.floor(Math.random() * 535) + 65;
+		}
+		while (checkCollision(spaceThings, x, y, 0));
+		spaceThings.push(new SpaceThing(x, y, i));
+	}
+}
+
+function drawSpaceThings() {
+	for (item in spaceThings) {
+		var x = spaceThings[item].x;
+		var y = spaceThings[item].y;
+
+		switch (spaceThings[item].type) {
+			case 0:
+				drawUFO(x, y);
+				break;
+			case 1:
+				drawPlanet(x, y);
+				break;
+			case 2: 
+				drawMoon(x, y);
+				break;
+			case 3:
+				drawRobot(x, y);
+				break;
+			case 4:
+				drawSpaceship(x, y);
+				break;
+			case 5:
+				drawStar(x, y);
+				break;
+			case 6:
+				drawSatellite(x, y);
+				break;
+			case 7:
+				drawSatellite2(x, y);
+				break;
+			case 8:
+				drawRocket(x, y);
+				break;
+			case 9:
+				drawAstroid(x, y);
+				break;
+		}
+	}
+}
+
+function moveSpaceThings() {
+	ctx.clearRect(0, 40, 1000, 600);
+	drawSpaceThings();
+	drawBlackHoles();
+	for (item in spaceThings) {
+		var object = spaceThings[item];
+		while ((object.x + object.direction.x) <= 25 || 
+			(object.x + object.direction.x) >= 975 || 
+			(object.y + object.direction.y) <= 65 || 
+			(object.y + object.direction.y) >= 615) {
+			object.direction = getDirection();
+		} 
+		object.x += object.direction.x;
+		object.y += object.direction.y;
+	}
+	eventHorizon();
+	setTimeout(moveSpaceThings, 33);
+}
+
+function insertBlackHoles() {
 
 	do {
-		x = Math.floor(Math.random() * 950) + 25;
-		y = Math.floor(Math.random() * 535) + 65;
-
-	} 
-	while (checkCollision(spaceObject, x, y, 1) || checkCollision(blackHoles, x, y, 1) && blackHoles.length < 20);
-
-	if (blackHoles.length < 20) {
-		blackHoles.push(new BlackHole(x, y));
-	}
-}
-
-
-function initObjects() {
-	while (spaceObject.length < 10) {
-		var type = Math.floor(Math.random() * 4);
 		var x = Math.floor(Math.random() * 950) + 25;
 		var y = Math.floor(Math.random() * 535) + 65;
-		var collision = checkCollision(spaceObject, x, y, 0);
-		console.log(collision);
-		if (!collision) {
-			switch(type) {
-				case 0:
-					spaceObject.push(new Moon(x, y));
-					break;
-				case 1:
-					spaceObject.push(new Planet(x, y));
-					break;
-				case 2:
-					spaceObject.push(new Ufo(x, y));
-					break;
-				case 3:
-					spaceObject.push(new Spaceship(x, y));
-					break;
-			}
+
+	} 
+	while (checkCollision(spaceThings, x, y, 1) || checkCollision(blackHoles, x, y, 1) && blackHoles.length < 20);
+
+	var type = Math.floor(Math.random() * 15);
+	if (blackHoles.length < 15) {
+		if (type < 9) {
+			blackHoles.push(new BlackHole(x, y, 0));
+		} else if (type >= 9 && type < 13) {
+			blackHoles.push(new BlackHole(x, y, 1));
+		} else {
+			blackHoles.push(new BlackHole(x, y, 2));
 		}
-
 	}
 }
-
-function moveObject() {
-	var c = document.getElementById("main");
-    var ctx = c.getContext("2d");
-    window.ctx.clearRect(0, 40, 1000, 600);
-	for (object in spaceObject) {
-		var temp = spaceObject[object];
-		temp.draw();
-		while ((temp.x + temp.direction.x) <= 25 || 
-			(temp.x + temp.direction.x) >= 975 || 
-			(temp.y + temp.direction.y) <= 65 || 
-			(temp.y + temp.direction.y) >= 615) {
-			temp.direction = generateDirection();
-		} 
-		temp.x += temp.direction.x;
-		temp.y += temp.direction.y;
-	}
-
+function drawBlackHoles() {
 	for (item in blackHoles) {
-		ctx.drawImage(blackHole, blackHoles[item].x-25, blackHoles[item].y-25, 50, 50);
+		switch(blackHoles[item].type) {
+			case 0:
+				ctx.drawImage(blackHoleBlue, blackHoles[item].x-25, blackHoles[item].y-25, 50, 50);
+				break;
+			case 1:
+				ctx.drawImage(blackHolePurple, blackHoles[item].x-25, blackHoles[item].y-25, 50, 50);
+				break;
+			case 2:
+				ctx.drawImage(blackHoleBlack, blackHoles[item].x-25, blackHoles[item].y-25, 50, 50);
+				break;
+		}
+		
 	}
-	disappear();
-	setTimeout(moveObject, 33);
 }
 
-function disappear() {
-	for (var i = 0; i < spaceObject.length; i++) {
-		var collision = checkCollision(blackHoles, spaceObject[i].x, spaceObject[i].y, 0);
+function eventHorizon() {
+	for (var i = 0; i < spaceThings.length; i++) {
+		var collision = checkCollision(blackHoles, spaceThings[i].x, spaceThings[i].y, 0);
 
 		if (collision) {
-			spaceObject.splice(i, 1);
+			spaceThings.splice(i, 1);
 		}
 	}
 }
 
-
 function startGame() {
-	// draw the Moon, Planet, Spaceship and Ufo in the canvas
-
-	
-
 	infoBar();
-	initObjects();
-	setInterval(loadBlackHole, 1000);
-	moveObject();
-
-	// var moon = new Moon(100, 200, (50/3));
-	// moon.draw();
-	// var planet = new Planet(200, 300);
-	// planet.draw();
-	// var ufo = new Ufo(350, 400);
-	// ufo.draw();
-	// var spaceship = new Spaceship(500, 400);
-	// spaceship.draw();
-	// loadBlackHole(200, 100);
-	
-	
+	insertSpaceThings();
+	setInterval(insertBlackHoles, 1000);
+	moveSpaceThings();
+	// drawSpaceThings();
 }
+
+function drawUFO(x, y) {
+	ctx.beginPath();
+	ctx.moveTo(x + Math.sqrt(200), y + Math.sqrt(200));
+	ctx.arc(x, y, 20, 45 * Math.PI / 180, 225 * Math.PI / 180, true);
+	ctx.lineTo(x + Math.sqrt(200), y + Math.sqrt(200));
+	ctx.moveTo(x + 15, y + 15);
+	ctx.ellipse(x, y, 10, Math.sqrt(1250), 135 * Math.PI/180, 
+		210 * Math.PI / 180, 150 * Math.PI / 180);
+	ctx.stroke();
+}
+
+function drawPlanet(x, y) {
+	ctx.beginPath();
+	ctx.ellipse(x, y, Math.sqrt(1250), 5, 135 * Math.PI/180, 
+		135 * Math.PI/180, 45 * Math.PI/180);
+	ctx.moveTo(x + 22, y);
+	ctx.arc(x, y, 22, 0, 2*Math.PI, false);
+	ctx.stroke();
+}
+
+function drawMoon(x, y) {
+	ctx.beginPath();
+	ctx.arc(x, y, 25, 270 * Math.PI / 180, 2 * Math.PI, true);
+	ctx.fillStyle = "#000000";
+	ctx.fill();
+	ctx.closePath();
+	ctx.beginPath();
+	ctx.moveTo(x, y - 25);
+	var difference = Math.sqrt(1250) / 2;
+	ctx.arc(x+13, y-13, difference, (270 - 26) * Math.PI / 180, 
+		(360 + 26) * Math.PI / 180, true);
+	ctx.fillStyle="#FFFFFF";
+	ctx.fill();
+}
+
+function drawRobot(x, y) {
+	ctx.beginPath();
+
+	// head
+	ctx.moveTo(x+10, y-15);
+	ctx.arc(x,y-15, 10, 0, 1*Math.PI, true);
+
+	// body
+	ctx.rect(x-10, y-15, 20, 25);
+
+	// legs
+	ctx.moveTo(x-5,y+10);
+	ctx.lineTo(x-5, y+25);
+	ctx.moveTo(x+5,y+10);
+	ctx.lineTo(x+5, y+25);
+
+	//eyes
+	ctx.moveTo(x-3, y-19);
+	ctx.arc(x-4,y-19, 1, 0, 2*Math.PI, true);
+
+	ctx.moveTo(x+4, y-19);
+	ctx.arc(x+3,y-19, 1, 0, 2*Math.PI, true);
+
+
+	// arms
+	ctx.moveTo(x-10, y-10);
+	ctx.lineTo(x-20, y+5);
+	ctx.lineTo(x-23, y+2);
+	ctx.lineTo(x-25, y+5);
+	ctx.moveTo(x-20, y+5);
+	ctx.lineTo(x-17, y+7);
+	ctx.lineTo(x-19, y+9);
+
+	ctx.moveTo(x+10, y-10);
+	ctx.lineTo(x+20, y-20);
+
+	ctx.stroke();
+
+}
+
+function drawSpaceship(x, y) {
+	ctx.beginPath();
+   	 	
+ 	ctx.fillStyle = '#000000';
+ 	// Body of the spaceship
+	ctx.moveTo(x + 10, y - 10);
+	ctx.ellipse(x, y, 10, 22, 0, 0, 2 * Math.PI);
+	ctx.fill();
+
+	// left wind of the spaceship
+	ctx.moveTo(x - 10, y - 3);
+	ctx.lineTo(x - 20, y + 12);
+	ctx.lineTo(x - 20, y + 25);
+	ctx.lineTo(x - 5, y + 25);
+	ctx.lineTo(x - 5, y + 7);
+	ctx.fill();
+
+	// right wind of the spaceship
+	ctx.moveTo(x + 10, y - 3);
+	ctx.lineTo(x + 20, y + 12);
+	ctx.lineTo(x + 20, y + 25);
+	ctx.lineTo(x + 5, y + 25);
+	ctx.lineTo(x + 5, y + 7);
+	ctx.fill();
+
+// 	ctx.rect(x - 9, y - 3, 15, 22);
+// 	ctx.fill();
+}
+
+function drawRocket(x, y) {
+	ctx.beginPath();
+	ctx.moveTo(x, y - 25);
+	ctx.lineTo(x, y - 20);
+	ctx.ellipse(x - 5, y, 10, 30, 0, 300 * Math.PI / 180, 345 * Math.PI / 180);
+	ctx.lineTo(x - 5, y - 8);
+	ctx.ellipse(x + 5, y, 10, 30, 0, 200 * Math.PI / 180, 230 * Math.PI / 180);
+	ctx.fillStyle="#EE0000";
+	ctx.fill()
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.moveTo(x - 5, y);
+	ctx.rect(x - 5, y - 8, 10, 20);
+
+	ctx.moveTo(x - 5, y - 5);
+	ctx.lineTo(x - 25, y + 12);
+	ctx.lineTo(x - 5, y + 12);
+	ctx.lineTo(x - 5, y - 5);
+
+	ctx.moveTo(x + 5, y - 5);
+	ctx.lineTo(x + 25, y + 12);
+	ctx.lineTo(x + 5, y + 12);
+	ctx.lineTo(x + 5, y - 5);
+	ctx.fillStyle = "#062B78";
+	ctx.fill()
+	ctx.stroke();
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.moveTo(x - 5, y + 12);
+	ctx.lineTo(x - 7, y + 25);
+	ctx.lineTo(x - 3, y + 20);
+	ctx.lineTo(x, y + 25);
+	ctx.lineTo(x + 3, y + 20);
+	ctx.lineTo(x + 7, y + 25);
+	ctx.lineTo(x + 5, y + 12);
+	ctx.lineTo(x - 5, y + 12);
+	ctx.fillStyle = "#F04900";
+	ctx.fill();
+	ctx.stroke();
+}
+
+function drawStar(x, y) {
+	ctx.beginPath();
+
+	ctx.moveTo(x, y - 25);
+	ctx.lineTo(x + 7.5, y - 7);
+	ctx.lineTo(x + 25, y - 7);
+	ctx.lineTo(x + 12, y + 7);
+	ctx.lineTo(x + 20, y + 25);
+	ctx.lineTo(x, y + 15);
+	ctx.lineTo(x - 20, y + 25);
+	ctx.lineTo(x - 12, y + 7);
+	ctx.lineTo(x - 25, y - 7);
+	ctx.lineTo(x - 7.5, y - 7);
+	ctx.lineTo(x, y - 25);
+	ctx.fillStyle = "#FBF57D";
+	ctx.fill()
+	ctx.stroke();
+
+}
+
+function drawAstroid(x, y) {
+	ctx.beginPath();
+
+	ctx.moveTo(x, y - 25);
+	ctx.arc(x, y - 15, 10, 270 * Math.PI / 180, Math.PI, true);
+	ctx.lineTo(x - 25, y - 10);
+	ctx.lineTo(x - 22, y + 10);
+	ctx.lineTo(x - 10, y + 12);
+	ctx.lineTo(x - 10, y + 12);
+	ctx.lineTo(x - 15, y + 20);
+	ctx.lineTo(x - 5, y + 25);
+	ctx.lineTo(x + 8, y + 20);
+	ctx.lineTo(x + 15, y);
+	ctx.arc(x, y, 25, 0, 270 * Math.PI / 180, true);
+
+	ctx.moveTo(x - 3, y - 3);
+	ctx.lineTo(x - 7, y + 3);
+	ctx.lineTo(x, y + 3);
+	ctx.lineTo(x - 5, y + 9);
+
+	ctx.moveTo(x + 10, y - 3);
+	ctx.lineTo(x + 7, y + 3);
+	ctx.lineTo(x + 13, y + 3);
+	ctx.lineTo(x + 10, y + 9);
+	ctx.fillStyle = "#B8B8B8";
+	ctx.fill()
+	ctx.stroke();
+}
+
+function drawSatellite(x, y) {
+	ctx.beginPath();
+	ctx.rect(x - 4, y - 10, 8, 20);
+	ctx.stroke();
+	ctx.beginPath();
+	ctx.rect(x - 25, y - 5, 18, 8);
+	ctx.rect(x + 7, y - 5, 18, 8);
+	ctx.fillStyle = "#000000";
+	ctx.fill();
+	ctx.moveTo(x - 4, y);
+	ctx.lineTo(x - 7, y);
+	ctx.moveTo(x + 4, y);
+	ctx.lineTo(x + 7, y);
+	ctx.stroke();
+}
+
+function drawSatellite2(x, y) {
+	ctx.beginPath();
+	ctx.rect(x - 4, y - 10, 8, 20);
+	ctx.moveTo(x, y - 10);
+	ctx.lineTo(x, y - 15);
+	ctx.arc(x, y - 17, 2, 2 * Math.PI, false);
+	ctx.stroke();
+	ctx.beginPath();
+	ctx.rect(x - 25, y - 5, 18, 8);
+	ctx.rect(x + 7, y - 5, 18, 8);
+	ctx.fillStyle = "#767676";
+	ctx.fill();
+	ctx.moveTo(x - 4, y);
+	ctx.lineTo(x - 7, y);
+	ctx.moveTo(x + 4, y);
+	ctx.lineTo(x + 7, y);
+	ctx.stroke();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
