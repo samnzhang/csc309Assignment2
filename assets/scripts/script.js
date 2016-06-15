@@ -17,11 +17,18 @@ window.onload = function() {
 	blackHoleBlack.src = 'assets/images/black-hole.svg';
 
 	c.setAttribute("onmousedown", "clickBlackHole(event)");
-	window.level = 1;
-	window.pause = false;
-	window.timeLeft = 60;
-	window.score = 200;
-	window.over = false;
+	window.level;
+	window.pause;
+	window.timeLeft;
+	window.score;
+	window.over;
+
+	if (localStorage.highScore == null) {
+		localStorage.highScore = 0;
+	}
+
+	document.getElementById("highscore").innerHTML = "Highscore: " + localStorage.highScore;
+	
 }
 
 function displayCanvas() {
@@ -370,10 +377,12 @@ function moveSpaceThings() {
 }
 
 function levelOverview() {
+	document.getElementById("score").innerHTML = "Your Score: " + score;
 	var canvas = document.getElementById("main");
 	canvas.style.display = 'none';
 	var next = document.getElementById("next");
 	next.style.display = 'block';
+
 }
 
 function initLevel2() {
@@ -387,10 +396,16 @@ function initLevel2() {
 }
 
 function finish() {
+	document.getElementById("finalscore").innerHTML = "Your Score: " + score;
 	var canvas = document.getElementById("main");
 	canvas.style.display = 'none';
 	var finish = document.getElementById("finish");
 	finish.style.display = 'block';
+
+	if (score > localStorage.highScore) {
+		localStorage.highScore = score;
+	}
+	document.getElementById("highscore").innerHTML = "Highscore: " + localStorage.highScore;
 }
 
 function restart() {
