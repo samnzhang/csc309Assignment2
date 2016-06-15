@@ -9,16 +9,27 @@
     
     <body>
         <section id="start">
-            <p>
-                Super Awesome Space Adventure
-            </p>
+            <h1 id="title">Super Awesome Space Adventure</h1>
 
-            <p>
-                High Score: <br>
-            </p>
+            <p id="highscore"> High Score: </p>
 
             <button onclick="displayCanvas()">START</button>
         </section>
+
+        <section id="next">
+            <h2 id="score">Your Score: <h2>
+
+            <button onclick="initLevel2()">NEXT</button>
+        </section>
+
+        <section id="finish">
+            <h1 id="gameover">Game Over!</h1>
+            <h2 id="score">Your Score: <h2>
+
+            <button onclick="restart()">FINISH</button>
+        </section>
+
+
 
         <canvas id="main" width="1000" height="640"></canvas>
        <!--  <footer id='credit'>

@@ -17,9 +17,11 @@ window.onload = function() {
 	blackHoleBlack.src = 'assets/images/black-hole.svg';
 
 	c.setAttribute("onmousedown", "clickBlackHole(event)");
+	window.level = 1;
 	window.pause = false;
 	window.timeLeft = 60;
 	window.score = 200;
+	window.over = false;
 }
 
 function displayCanvas() {
@@ -27,19 +29,39 @@ function displayCanvas() {
 	canvas.style.display = 'initial';
 	var start = document.getElementById("start");
 	start.style.display = 'none';
-	// infoBar();
+	level = 1;
+	pause = false;
+	timeLeft = 60;
+	score = 200;
+	over = false;
+	spaceThings = [];
+	blackHoles = [];
 	startGame();
 }
 
 function countDown() {
-	if (!pause) {
+	if (!pause && !over) {
 		timeLeft -= 1;
 	}
 }
 
+function gameOver() {
+	if (spaceThings.length == 0) {
+		over = true;
+	}
+
+	if (timeLeft == 0) {
+		if (spaceThings.length > 0) {
+			over = false;
+		} else {
+			over = true;
+		}
+	}
+ }
+
 function infoBar() {
-	var level = "Level " + 1;
-	var score = "Score: " + window.score;
+	var levelDisplay = "Level " + level;
+	var scoreBoard = "Score: " + score;
 	var timer = timeLeft + " seconds";
 	ctx.font = "20px sans-serif";
 	ctx.fillStyle = "black";
@@ -49,8 +71,8 @@ function infoBar() {
 	ctx.rect(0, 0, 1000, 40);
 	ctx.stroke();
 
-	ctx.fillText(level, 20, 27);
-	ctx.fillText(score, 450, 27);
+	ctx.fillText(levelDisplay, 20, 27);
+	ctx.fillText(scoreBoard, 450, 27);
 	ctx.fillText(timer, 890, 27);
 
 	ctx.fillText("Pause", 793, 27);
@@ -64,7 +86,7 @@ function clickBlackHole(event) {
 	var mouseY = event.clientY - c.getBoundingClientRect().top;
 
 	if (checkCollision(blackHoles, mouseX, mouseY, 3)) {
-		if (!pause) {
+		if (!pause && !over) {
 			for (var i = 0; i < blackHoles.length; i++) {
 				var blackHole = [];
 				blackHole.push(blackHoles[i]);
@@ -90,7 +112,7 @@ function clickBlackHole(event) {
 	
 	console.log(spaceThings);
 
-	if (checkPause(mouseX, mouseY)) {
+	if (checkPause(mouseX, mouseY) && !over) {
 		pause = !pause;
 		console.log(pause);
 	}
@@ -164,14 +186,10 @@ function checkPause(x, y) {
 	var yTop;
 	var yBottom;
 
-	
-
 	xRight = 870;
 	xLeft = 770;
 	yTop = 5;
 	yBottom = 35;
-
-	
 
 	if (xRight < x || xLeft > x || yTop > y || yBottom < y) {
 		return false;
@@ -282,12 +300,13 @@ function calculatePullDirection(x, y, targetX, targetY, t) {
 }
 
 function moveSpaceThings() {
-	if (!pause) {
+	if (!pause && !over) {
 		
 		ctx.clearRect(0, 0, 1000, 640);
 		drawSpaceThings();
 		drawBlackHoles();
 		infoBar();
+		gameOver();
 		for (item in spaceThings) {
 			var object = spaceThings[item];
 			if (object.pull == null) {
@@ -325,11 +344,64 @@ function moveSpaceThings() {
 		}
 		eventHorizon();
 	}
+	if (!over && timeLeft == 0) {
+		if (level == 1) {
+			for (item in spaceThings) {
+				spaceThings[item].pull = null;
+			}
+			level += 1;
+			levelOverview();
+		} else {
+			finish();
+		}
+
+		clearInterval(countTime);
+		clearInterval(speed);
+
+		return null;
+		
+	} else if (over) {
+		finish();
+		clearInterval(countTime);
+		clearInterval(speed);
+		return null;
+	}
 	setTimeout(moveSpaceThings, 33);
 }
 
+function levelOverview() {
+	var canvas = document.getElementById("main");
+	canvas.style.display = 'none';
+	var next = document.getElementById("next");
+	next.style.display = 'block';
+}
+
+function initLevel2() {
+	var canvas = document.getElementById("main");
+	canvas.style.display = 'initial';
+	var next = document.getElementById("next");
+	next.style.display = 'none';
+	blackHoles = [];
+	timeLeft = 60;
+	startGame();
+}
+
+function finish() {
+	var canvas = document.getElementById("main");
+	canvas.style.display = 'none';
+	var finish = document.getElementById("finish");
+	finish.style.display = 'block';
+}
+
+function restart() {
+	var finish = document.getElementById("finish");
+	finish.style.display = 'none';
+	var start = document.getElementById("start");
+	start.style.display = 'block';
+}
+
 function insertBlackHoles() {
-	if (!pause) {
+	if (!pause && !over) {
 		do {
 			var x = Math.floor(Math.random() * 950) + 25;
 			var y = Math.floor(Math.random() * 535) + 65;
@@ -397,16 +469,22 @@ function eventHorizon() {
 			}
 			spaceThings.splice(i, 1);
 			score -= 50;
-
 		}
 	}
 }
 
 function startGame() {
 	// setInterval(infoBar, 500);
-	insertSpaceThings();
-	setInterval(countDown, 1000);
-	setInterval(insertBlackHoles, 1000);
+	if (level == 1) {
+		insertSpaceThings();
+		window.speed = setInterval(insertBlackHoles, 1000);
+	}
+
+	window.countTime = setInterval(countDown, 1000);
+	
+	if (level == 2) {
+		setInterval(insertBlackHoles, 500);
+	}
 	moveSpaceThings();
 	// drawSpaceThings();
 }
