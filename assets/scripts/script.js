@@ -18,6 +18,8 @@ window.onload = function() {
 
 	c.setAttribute("onmousedown", "clickBlackHole(event)");
 	window.pause = false;
+	window.timeLeft = 60;
+	window.score = 200;
 }
 
 function displayCanvas() {
@@ -29,12 +31,20 @@ function displayCanvas() {
 	startGame();
 }
 
+function countDown() {
+	if (!pause) {
+		timeLeft -= 1;
+	}
+}
+
 function infoBar() {
 	var level = "Level " + 1;
-	var score = "Score: " + 200;
-	var timer = 60 + " seconds";
+	var score = "Score: " + window.score;
+	var timer = timeLeft + " seconds";
 	ctx.font = "20px sans-serif";
 	ctx.fillStyle = "black";
+
+	// ctx.clearRect(5, 5, 993, 33);
 
 	ctx.rect(0, 0, 1000, 40);
 	ctx.stroke();
@@ -62,12 +72,23 @@ function clickBlackHole(event) {
 					for(item in blackHoles[i].pulling) {
 						blackHoles[i].pulling[item].pull = null;
 					}
+
+					if (blackHoles[i].type == 0) {
+						score += 5;
+					} else if (blackHoles[i].type == 1) {
+						score += 10;
+					} else {
+						score += 20;
+					}
+
 					blackHoles.splice(i, 1);
+
 				}
 			}
 		}
 	}
-		
+	
+	console.log(spaceThings);
 
 	if (checkPause(mouseX, mouseY)) {
 		pause = !pause;
@@ -89,6 +110,7 @@ function BlackHole(x, y, type) {
 	this.y = y;
 	this.type = type;
 	this.pulling = [];
+	this.pulledItems = 0;
 }
 
 function Direction(x, y) {
@@ -261,9 +283,11 @@ function calculatePullDirection(x, y, targetX, targetY, t) {
 
 function moveSpaceThings() {
 	if (!pause) {
-		ctx.clearRect(0, 40, 1000, 600);
+		
+		ctx.clearRect(0, 0, 1000, 640);
 		drawSpaceThings();
 		drawBlackHoles();
+		infoBar();
 		for (item in spaceThings) {
 			var object = spaceThings[item];
 			if (object.pull == null) {
@@ -347,14 +371,41 @@ function eventHorizon() {
 		var collision = checkCollision(blackHoles, spaceThings[i].x, spaceThings[i].y, 0);
 
 		if (collision) {
+			for (var j = 0; j < blackHoles.length; j++) {
+				var blackHole = [];
+				blackHole.push(blackHoles[j]);
+				if (checkCollision(blackHole, spaceThings[i].x, spaceThings[i].y, 0)) {
+					blackHoles[j].pulledItems += 1;
+
+					if (blackHoles[j].type == 0 && blackHoles[j].pulledItems == 3) {
+						for (item in blackHoles[j].pulling) {
+							blackHoles[j].pulling[item].pull = null;
+						}
+						blackHoles.splice(j, 1);
+					} else if (blackHoles[j].type == 1 && blackHoles[j].pulledItems == 2) {
+						for (item in blackHoles[j].pulling) {
+							blackHoles[j].pulling[item].pull = null;
+						}
+						blackHoles.splice(j, 1);
+					} else if (blackHoles[j].type == 2 && blackHoles[j].pulledItems == 1) {
+						for (item in blackHoles[j].pulling) {
+							blackHoles[j].pulling[item].pull = null;
+						}
+						blackHoles.splice(j, 1);
+					}
+				}
+			}
 			spaceThings.splice(i, 1);
+			score -= 50;
+
 		}
 	}
 }
 
 function startGame() {
-	infoBar();
+	// setInterval(infoBar, 500);
 	insertSpaceThings();
+	setInterval(countDown, 1000);
 	setInterval(insertBlackHoles, 1000);
 	moveSpaceThings();
 	// drawSpaceThings();
@@ -491,7 +542,7 @@ function drawRocket(x, y) {
 	ctx.fillStyle = "#062B78";
 	ctx.fill()
 	ctx.stroke();
-	ctx.stroke();
+	// ctx.stnroke();
 
 	ctx.beginPath();
 	ctx.moveTo(x - 5, y + 12);
@@ -534,7 +585,6 @@ function drawAstroid(x, y) {
 	ctx.arc(x, y - 15, 10, 270 * Math.PI / 180, Math.PI, true);
 	ctx.lineTo(x - 25, y - 10);
 	ctx.lineTo(x - 22, y + 10);
-	ctx.lineTo(x - 10, y + 12);
 	ctx.lineTo(x - 10, y + 12);
 	ctx.lineTo(x - 15, y + 20);
 	ctx.lineTo(x - 5, y + 25);
@@ -590,17 +640,3 @@ function drawSatellite2(x, y) {
 	ctx.lineTo(x + 7, y);
 	ctx.stroke();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
