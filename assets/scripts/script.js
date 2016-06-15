@@ -92,14 +92,15 @@ function clickBlackHole(event) {
 	var mouseX = event.clientX - c.getBoundingClientRect().left;
 	var mouseY = event.clientY - c.getBoundingClientRect().top;
 
-	if (checkCollision(blackHoles, mouseX, mouseY, 3)) {
+	if (checkCollision(blackHoles, mouseX, mouseY, 2)) {
 		if (!pause && !over) {
 			for (var i = 0; i < blackHoles.length; i++) {
 				var blackHole = [];
 				blackHole.push(blackHoles[i]);
-				if (checkCollision(blackHole, mouseX, mouseY, 3)) {
+				if (checkCollision(blackHole, mouseX, mouseY, 2)) {
 					for(item in blackHoles[i].pulling) {
 						blackHoles[i].pulling[item].pull = null;
+						blackHoles[i].pulling[item].pulling = false;
 					}
 
 					if (blackHoles[i].type == 0) {
@@ -132,6 +133,7 @@ function SpaceThing(x, y, type) {
 	this.direction = getDirection();
 	this.pull = null;
 	this.type = type;
+	this.pulling = false;
 }
 
 function BlackHole(x, y, type) {
@@ -158,8 +160,10 @@ function checkCollision(things, x, y, type) {
 		difference = 50;
 	} else if (type == 1) {
 		difference = 100;
-	} else {
+	} else if (type == 2){
 		difference = 25;
+	} else {
+		difference = 3;
 	}
 
 	for (var i = 0; i < things.length; i++) {
@@ -332,15 +336,19 @@ function moveSpaceThings() {
 				var directionX;
 				var directiony;
 
-				switch (object.pull.type) {
-					case 0: 
-						object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 50);
-						break;
-					case 1:
-						object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 30);
-						break;
-					case 2:
-						object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 15);
+				if (object.pulling == false) {
+					switch (object.pull.type) {
+						case 0: 
+							object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 50);
+							break;
+						case 1:
+							object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 30);
+							break;
+						case 2:
+							object.direction = calculatePullDirection(object.x, object.y, object.pull.x, object.pull.y, 15);
+							break;
+					}
+					object.pulling = true;
 
 				}
 			
@@ -355,22 +363,17 @@ function moveSpaceThings() {
 		if (level == 1) {
 			for (item in spaceThings) {
 				spaceThings[item].pull = null;
+				spaceThings[item].pulling = false;
 			}
 			level += 1;
 			levelOverview();
 		} else {
 			finish();
 		}
-
-		clearInterval(countTime);
-		clearInterval(speed);
-
 		return null;
 		
 	} else if (over) {
 		finish();
-		clearInterval(countTime);
-		clearInterval(speed);
 		return null;
 	}
 	setTimeout(moveSpaceThings, 33);
@@ -392,6 +395,8 @@ function initLevel2() {
 	next.style.display = 'none';
 	blackHoles = [];
 	timeLeft = 60;
+	clearInterval(countTime);
+	clearInterval(insertSpeed);
 	startGame();
 }
 
@@ -401,6 +406,9 @@ function finish() {
 	canvas.style.display = 'none';
 	var finish = document.getElementById("finish");
 	finish.style.display = 'block';
+
+	clearInterval(countTime);
+	clearInterval(insertSpeed);
 
 	if (score > localStorage.highScore) {
 		localStorage.highScore = score;
@@ -422,10 +430,10 @@ function insertBlackHoles() {
 			var y = Math.floor(Math.random() * 535) + 65;
 
 		} 
-		while (checkCollision(spaceThings, x, y, 1) || checkCollision(blackHoles, x, y, 1) && blackHoles.length < 20);
+		while (checkCollision(blackHoles, x, y, 1) && blackHoles.length < 20);
 
 		var type = Math.floor(Math.random() * 15);
-		if (blackHoles.length < 15) {
+		if (blackHoles.length < 20) {
 			if (type < 9) {
 				blackHoles.push(new BlackHole(x, y, 0));
 			} else if (type >= 9 && type < 13) {
@@ -455,28 +463,31 @@ function drawBlackHoles() {
 
 function eventHorizon() {
 	for (var i = 0; i < spaceThings.length; i++) {
-		var collision = checkCollision(blackHoles, spaceThings[i].x, spaceThings[i].y, 0);
+		var collision = checkCollision(blackHoles, spaceThings[i].x, spaceThings[i].y, 3);
 
 		if (collision) {
 			for (var j = 0; j < blackHoles.length; j++) {
 				var blackHole = [];
 				blackHole.push(blackHoles[j]);
-				if (checkCollision(blackHole, spaceThings[i].x, spaceThings[i].y, 0)) {
+				if (checkCollision(blackHole, spaceThings[i].x, spaceThings[i].y, 3)) {
 					blackHoles[j].pulledItems += 1;
 
 					if (blackHoles[j].type == 0 && blackHoles[j].pulledItems == 3) {
 						for (item in blackHoles[j].pulling) {
 							blackHoles[j].pulling[item].pull = null;
+							blackHoles[j].pulling[item].pulling = false;
 						}
 						blackHoles.splice(j, 1);
 					} else if (blackHoles[j].type == 1 && blackHoles[j].pulledItems == 2) {
 						for (item in blackHoles[j].pulling) {
 							blackHoles[j].pulling[item].pull = null;
+							blackHoles[j].pulling[item].pulling = false;
 						}
 						blackHoles.splice(j, 1);
 					} else if (blackHoles[j].type == 2 && blackHoles[j].pulledItems == 1) {
 						for (item in blackHoles[j].pulling) {
 							blackHoles[j].pulling[item].pull = null;
+							blackHoles[j].pulling[item].pulling = false;
 						}
 						blackHoles.splice(j, 1);
 					}
@@ -492,13 +503,13 @@ function startGame() {
 	// setInterval(infoBar, 500);
 	if (level == 1) {
 		insertSpaceThings();
-		window.speed = setInterval(insertBlackHoles, 1000);
+		window.insertSpeed = setInterval(insertBlackHoles, 1000);
 	}
 
 	window.countTime = setInterval(countDown, 1000);
 	
 	if (level == 2) {
-		setInterval(insertBlackHoles, 500);
+		window.insertSpeed = setInterval(insertBlackHoles, 500);
 	}
 	moveSpaceThings();
 	// drawSpaceThings();
