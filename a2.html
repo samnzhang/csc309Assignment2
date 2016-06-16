@@ -11,27 +11,29 @@
         <section id="start">
             <h1 id="title">Super Awesome Space Adventure</h1>
 
-            <p id="highscore"> High Score: </p>
+            <p id="highscoreLabel"> High Score: <br>
+                <ol id="highscores">
+                    <li id="highscore1"></li>
+                    <li id="highscore2"></li>
+                    <li id="highscore3"></li>
+                </ol>
+            </p>
+            
 
             <button onclick="displayCanvas()">START</button>
         </section>
 
         <section id="next">
+            <h1 id="level">Level </h1>
             <h2 id="score">Your Score: <h2>
 
-            <button onclick="initLevel2()">NEXT</button>
+            <button id="nextLevel" onclick="initLevel()">NEXT</button>
+            <button id="finish" onclick="restart()">FINISH</button>
+
         </section>
-
-        <section id="finish">
-            <h1 id="gameover">Game Over!</h1>
-            <h2 id="finalscore">Your Score: <h2>
-
-            <button onclick="restart()">FINISH</button>
-        </section>
-
-
 
         <canvas id="main" width="1000" height="640"></canvas>
+        
         <footer id='credit'>
             <small>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
             </small>

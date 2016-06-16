@@ -1,7 +1,7 @@
 section#start {
 	margin-left: 100px;
 	margin-right: 100px;
-	padding: 10%;
+	padding: 5%;
 	text-align: center;
 	border: black;
 	border-style: solid;
@@ -19,9 +19,9 @@ section#next {
 	border-width: 1px;
 	margin-left: 33%;
 	margin-right: 33%;
-	margin-top: 10%;
+	margin-top: 7%;
 	padding-top: 75px;
-	padding-bottom: 100px;
+	padding-bottom: 50px;
 	display: none;
 }
 
@@ -49,13 +49,19 @@ h1#title {
 }
 
 h2#score {
-	padding-top: 25px;
-	padding-bottom: 100px;
+	padding-top: 75px;
+	padding-bottom: 90px;
 }
 
-p#highscore {
+p#highscoreLabel {
 	font-size: 20pt;
-	padding: 15px;
+	padding: 10px;
+}
+
+ol#highscores {
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 button {
@@ -71,6 +77,6 @@ canvas#main {
 	display: none;
 }
 
-span#credit {
-	bottom: 0px;
+footer {
+	text-align: center;
 }

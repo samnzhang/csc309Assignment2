@@ -1,12 +1,17 @@
 window.onload = function() {
+	// Canvas context.
 	window.c = document.getElementById("main");
 	window.ctx = c.getContext("2d");
 
+	// Global variables to store space objects and blackholes;
 	window.spaceThings = [];
 	window.blackHoles = [];
+
+	// Directions for how the space objects move;
 	window.directions = [new Direction(1, 1), new Direction(1, -1), 
 						new Direction(-1, 1), new Direction(-1, -1)];
 
+	// Global variables for imported svg images.
 	window.blackHoleBlue = new Image();
 	blackHoleBlue.src = 'assets/images/blue-hole.svg';
 
@@ -15,7 +20,7 @@ window.onload = function() {
 
 	window.blackHoleBlack = new Image();
 	blackHoleBlack.src = 'assets/images/black-hole.svg';
-
+	
 	c.setAttribute("onmousedown", "clickBlackHole(event)");
 	window.level;
 	window.pause;
@@ -23,11 +28,20 @@ window.onload = function() {
 	window.score;
 	window.over;
 
-	if (localStorage.highScore == null) {
-		localStorage.highScore = 0;
+	if (localStorage.highScore1 == null) {
+		localStorage.highScore1 = 0;
 	}
 
-	document.getElementById("highscore").innerHTML = "Highscore: " + localStorage.highScore;
+	if (localStorage.highScore2 == null) {
+		localStorage.highScore2 = 0;
+	}
+
+	if (localStorage.highScore3 == null) {
+		localStorage.highScore3 = 0;
+	}
+
+	displayHighscore();
+
 	
 }
 
@@ -36,6 +50,8 @@ function displayCanvas() {
 	canvas.style.display = 'initial';
 	var start = document.getElementById("start");
 	start.style.display = 'none';
+	var credit = document.getElementById("credit");
+	credit.style.display = 'none';
 	level = 1;
 	pause = false;
 	timeLeft = 60;
@@ -365,34 +381,77 @@ function moveSpaceThings() {
 				spaceThings[item].pull = null;
 				spaceThings[item].pulling = false;
 			}
-			level += 1;
 			levelOverview();
+			level += 1;
 		} else {
-			finish();
+			levelOverview();
 		}
 		return null;
 		
 	} else if (over) {
-		finish();
+		levelOverview();
 		return null;
 	}
 	setTimeout(moveSpaceThings, 33);
 }
 
+function setHighscore(score) {
+	var temp;
+	if (score > localStorage.highScore1) {
+		temp = localStorage.highScore1;
+		localStorage.highScore3 = localStorage.highScore2;
+		localStorage.highScore2 = temp;
+		localStorage.highScore1 = score;
+		return null;
+	} else if (score > localStorage.highScore2) {
+		localStorage.highScore3 = localStorage.highScore2;
+		localStorage.highScore2 = score;
+		return null;
+	} else if (score > localStorage.highScore3) {
+		localStorage.highScore3 = score;
+		return null;
+	}
+
+}
+
+function displayHighscore() {
+	document.getElementById("highscore1").innerHTML = localStorage.highScore1;
+	document.getElementById("highscore2").innerHTML = localStorage.highScore2;
+	document.getElementById("highscore3").innerHTML = localStorage.highScore3;
+}
+
 function levelOverview() {
+	document.getElementById("level").innerHTML = "Level " + level;
 	document.getElementById("score").innerHTML = "Your Score: " + score;
 	var canvas = document.getElementById("main");
 	canvas.style.display = 'none';
 	var next = document.getElementById("next");
 	next.style.display = 'block';
+	var credit = document.getElementById("credit");
+	credit.style.display = 'initial';
+	var nextLevel = document.getElementById("nextLevel");
+	var finish = document.getElementById("finish");
 
+	if (level == 1) {
+		nextLevel.style.display = 'initial';
+		finish.style.display = 'none';
+	} else {
+		nextLevel.style.display = 'none';
+		finish.style.display = 'initial';
+		setHighscore(score);
+		displayHighscore();
+	}
+	clearInterval(countTime);
+	clearInterval(insertSpeed);
 }
 
-function initLevel2() {
+function initLevel() {
 	var canvas = document.getElementById("main");
 	canvas.style.display = 'initial';
 	var next = document.getElementById("next");
 	next.style.display = 'none';
+	var credit = document.getElementById("credit");
+	credit.style.display = 'none';
 	blackHoles = [];
 	timeLeft = 60;
 	clearInterval(countTime);
@@ -400,25 +459,10 @@ function initLevel2() {
 	startGame();
 }
 
-function finish() {
-	document.getElementById("finalscore").innerHTML = "Your Score: " + score;
-	var canvas = document.getElementById("main");
-	canvas.style.display = 'none';
-	var finish = document.getElementById("finish");
-	finish.style.display = 'block';
-
-	clearInterval(countTime);
-	clearInterval(insertSpeed);
-
-	if (score > localStorage.highScore) {
-		localStorage.highScore = score;
-	}
-	document.getElementById("highscore").innerHTML = "Highscore: " + localStorage.highScore;
-}
-
 function restart() {
-	var finish = document.getElementById("finish");
-	finish.style.display = 'none';
+	displayHighscore();
+	var next = document.getElementById("next");
+	next.style.display = 'none';
 	var start = document.getElementById("start");
 	start.style.display = 'block';
 }
