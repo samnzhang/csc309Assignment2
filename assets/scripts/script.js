@@ -20,14 +20,18 @@ window.onload = function() {
 
 	window.blackHoleBlack = new Image();
 	blackHoleBlack.src = 'assets/images/black-hole.svg';
-	
+
+	// Canvas onclick event.
 	c.setAttribute("onmousedown", "clickBlackHole(event)");
+
+	// Global variables for game attributes
 	window.level;
 	window.pause;
 	window.timeLeft;
 	window.score;
 	window.over;
 
+	// Setting the default values for highscore if they don't exist.
 	if (localStorage.highScore1 == null) {
 		localStorage.highScore1 = 0;
 	}
@@ -40,11 +44,14 @@ window.onload = function() {
 		localStorage.highScore3 = 0;
 	}
 
+	// Display the highscore;
 	displayHighscore();
-
-	
 }
 
+/*
+ * Start button on click event, hides the starting page and displays the
+ * canvas. Also sets the game attributes to default.
+ */
 function displayCanvas() {
 	var canvas = document.getElementById("main");
 	canvas.style.display = 'initial';
@@ -547,13 +554,13 @@ function startGame() {
 	// setInterval(infoBar, 500);
 	if (level == 1) {
 		insertSpaceThings();
-		window.insertSpeed = setInterval(insertBlackHoles, 1000);
+		window.insertSpeed = setInterval(insertBlackHoles, 1500);
 	}
 
 	window.countTime = setInterval(countDown, 1000);
 	
 	if (level == 2) {
-		window.insertSpeed = setInterval(insertBlackHoles, 500);
+		window.insertSpeed = setInterval(insertBlackHoles, 750);
 	}
 	moveSpaceThings();
 	// drawSpaceThings();
