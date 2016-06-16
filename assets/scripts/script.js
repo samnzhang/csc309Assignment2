@@ -53,12 +53,15 @@ window.onload = function() {
  * canvas. Also sets the game attributes to default.
  */
 function displayCanvas() {
+	// Hides the starting page and displays the canvas.
 	var canvas = document.getElementById("main");
 	canvas.style.display = 'initial';
 	var start = document.getElementById("start");
 	start.style.display = 'none';
 	var credit = document.getElementById("credit");
 	credit.style.display = 'none';
+
+	// Setting the game attributes to default.
 	level = 1;
 	pause = false;
 	timeLeft = 60;
@@ -66,20 +69,31 @@ function displayCanvas() {
 	over = false;
 	spaceThings = [];
 	blackHoles = [];
+
+	// Starts the game.
 	startGame();
 }
 
+/*
+ * Count down function for time.
+ */
 function countDown() {
 	if (!pause && !over) {
 		timeLeft -= 1;
 	}
 }
 
+/*
+ * Determines if the game is over or not.
+ */
 function gameOver() {
+	// Game ends if there are no objects left.
 	if (spaceThings.length == 0) {
 		over = true;
 	}
 
+	// Game is not over if the play still has objects surviving at the end of
+	// the game time.
 	if (timeLeft == 0) {
 		if (spaceThings.length > 0) {
 			over = false;
@@ -89,14 +103,16 @@ function gameOver() {
 	}
  }
 
+/*
+ * Draws out the information bar.
+ */
 function infoBar() {
+	// Declare variables for the game info.
 	var levelDisplay = "Level " + level;
 	var scoreBoard = "Score: " + score;
 	var timer = timeLeft + " seconds";
 	ctx.font = "20px sans-serif";
 	ctx.fillStyle = "black";
-
-	// ctx.clearRect(5, 5, 993, 33);
 
 	ctx.rect(0, 0, 1000, 40);
 	ctx.stroke();
@@ -111,6 +127,11 @@ function infoBar() {
 	ctx.stroke();
 }
 
+/*
+ * Canvas on click event, checks if the player clicked on a black hole
+ * or the pause button. Blackhole disappears if clicked and game pauses
+ * on click.
+ */
 function clickBlackHole(event) {
 	var mouseX = event.clientX - c.getBoundingClientRect().left;
 	var mouseY = event.clientY - c.getBoundingClientRect().top;
@@ -439,7 +460,7 @@ function levelOverview() {
 	var nextLevel = document.getElementById("nextLevel");
 	var finish = document.getElementById("finish");
 
-	if (level == 1) {
+	if (level == 1 && !over) {
 		nextLevel.style.display = 'initial';
 		finish.style.display = 'none';
 	} else {
